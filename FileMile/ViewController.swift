@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import PDFKit
 
 class ViewController: UIViewController {
     
@@ -18,14 +19,16 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupFileManager(url: documentsURL)
-        setupTableView()       
+        setupTableView()
     }
 }
 
 //MARK: - Functions
 extension ViewController{
     
+    
     func setupFileManager(url: URL){
+        self.title = url.lastPathComponent.removingPercentEncoding
         do {
             fileURLs = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: nil)
         } catch {
@@ -39,7 +42,11 @@ extension ViewController{
             let vc = self.storyboard?.instantiateViewController(withIdentifier: "ViewController") as! ViewController
             vc.documentsURL = fileUrl
             navigationController?.pushViewController(vc, animated: true)
-        }else{
+        } else if fileUrl.pathExtension == "pdf" {
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "PdfViewController") as! PdfViewController
+            vc.pdfUrl = fileUrl
+            navigationController?.pushViewController(vc, animated: true)
+        } else {
             let path = fileUrl.absoluteString.replacingOccurrences(of: "file://", with: "shareddocuments://")
             let url = URL(string: path)!
             UIApplication.shared.open(url)
@@ -72,5 +79,6 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectObjectTapped(fileUrl: fileURLs[indexPath.row])
+        
     }
 }

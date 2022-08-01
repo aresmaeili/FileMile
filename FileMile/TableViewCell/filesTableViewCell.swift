@@ -6,9 +6,10 @@
 //
 
 import UIKit
+import PDFKit
 
 class filesTableViewCell: UITableViewCell {
-
+    
     @IBOutlet weak var contentImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var fileTypeLabel: UILabel!
@@ -16,6 +17,7 @@ class filesTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         setupCell()
+        
     }
 }
 
@@ -37,5 +39,9 @@ extension filesTableViewCell {
     
     func setupCell(){
         contentImageView.layer.cornerRadius = 25
+    }
+    
+    func handlePdf(){
+        
     }
 }
