@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		34B2AABF288C35AA00F3E8F8 /* filesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B2AABD288C35AA00F3E8F8 /* filesTableViewCell.swift */; };
+		34B2AAC0288C35AA00F3E8F8 /* filesTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 34B2AABE288C35AA00F3E8F8 /* filesTableViewCell.xib */; };
 		34F19E16288BF610009BE1CA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F19E15288BF610009BE1CA /* AppDelegate.swift */; };
 		34F19E18288BF610009BE1CA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F19E17288BF610009BE1CA /* SceneDelegate.swift */; };
 		34F19E1A288BF610009BE1CA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F19E19288BF610009BE1CA /* ViewController.swift */; };
@@ -36,6 +38,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		34B2AABD288C35AA00F3E8F8 /* filesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = filesTableViewCell.swift; sourceTree = "<group>"; };
+		34B2AABE288C35AA00F3E8F8 /* filesTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = filesTableViewCell.xib; sourceTree = "<group>"; };
 		34F19E12288BF610009BE1CA /* FileMile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FileMile.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		34F19E15288BF610009BE1CA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		34F19E17288BF610009BE1CA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -76,6 +80,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		34B2AAC1288C35AE00F3E8F8 /* TableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				34B2AABD288C35AA00F3E8F8 /* filesTableViewCell.swift */,
+				34B2AABE288C35AA00F3E8F8 /* filesTableViewCell.xib */,
+			);
+			path = TableViewCell;
+			sourceTree = "<group>";
+		};
 		34F19E09288BF610009BE1CA = {
 			isa = PBXGroup;
 			children = (
@@ -102,6 +115,7 @@
 				34F19E15288BF610009BE1CA /* AppDelegate.swift */,
 				34F19E17288BF610009BE1CA /* SceneDelegate.swift */,
 				34F19E19288BF610009BE1CA /* ViewController.swift */,
+				34B2AAC1288C35AE00F3E8F8 /* TableViewCell */,
 				34F19E1B288BF610009BE1CA /* Main.storyboard */,
 				34F19E1E288BF612009BE1CA /* Assets.xcassets */,
 				34F19E20288BF612009BE1CA /* LaunchScreen.storyboard */,
@@ -215,6 +229,9 @@
 				Base,
 			);
 			mainGroup = 34F19E09288BF610009BE1CA;
+			packageReferences = (
+				34B2AABC288C292F00F3E8F8 /* XCRemoteSwiftPackageReference "FileBrowser" */,
+			);
 			productRefGroup = 34F19E13288BF610009BE1CA /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -232,6 +249,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				34F19E22288BF612009BE1CA /* LaunchScreen.storyboard in Resources */,
+				34B2AAC0288C35AA00F3E8F8 /* filesTableViewCell.xib in Resources */,
 				34F19E1F288BF612009BE1CA /* Assets.xcassets in Resources */,
 				34F19E1D288BF610009BE1CA /* Main.storyboard in Resources */,
 			);
@@ -259,6 +277,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				34F19E1A288BF610009BE1CA /* ViewController.swift in Sources */,
+				34B2AABF288C35AA00F3E8F8 /* filesTableViewCell.swift in Sources */,
 				34F19E16288BF610009BE1CA /* AppDelegate.swift in Sources */,
 				34F19E18288BF610009BE1CA /* SceneDelegate.swift in Sources */,
 			);
@@ -445,6 +464,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -473,6 +493,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -602,6 +623,17 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		34B2AABC288C292F00F3E8F8 /* XCRemoteSwiftPackageReference "FileBrowser" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/marmelroy/FileBrowser";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
 	};
 	rootObject = 34F19E0A288BF610009BE1CA /* Project object */;
 }
