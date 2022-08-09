@@ -18,16 +18,39 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        createDirectory(FolderName: "FileMile")
         setupFileManager(url: documentsURL)
         setupTableView()
+    }
+    func getDocumentsDirectory() -> URL {
+        // find all possible documents directories for this user
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        // just send back the first one, which ought to be the only one
+        return paths[0]
     }
 }
 
 //MARK: - Functions
 extension ViewController{
     
+    func createDirectory(FolderName: String){
+        guard let url = FileManager.default.urls(for: .documentDirectory , in: .userDomainMask).first else { return }
+        let newFolder = url.appendingPathComponent("\(FolderName)")
+        do{
+            if !FileManager.default.fileExists(atPath: newFolder.path) {
+                try FileManager.default.createDirectory(at: newFolder, withIntermediateDirectories: true, attributes: [:])
+            }
+        }catch{
+            print("ERROR --> Create Directory \(newFolder.path)")
+        }
+    }
     
     func setupFileManager(url: URL){
+//        let newFolderItem = UIBarButtonItem(title: "New Folder", style: .plain, target: self, action: #selector(addTapped))
+        let addItem = UIBarButtonItem(title: "import", style: .plain, target: self, action: #selector(addTapped))
+
+        navigationItem.rightBarButtonItems =  [addItem]
         self.title = url.lastPathComponent.removingPercentEncoding
         do {
             fileURLs = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: nil)
@@ -36,8 +59,12 @@ extension ViewController{
         }
     }
     
+    @objc func addTapped(){
+        let vc = self.storyboard?.instantiateViewController(withIdentifier: "AddViewController") as! AddViewController
+        navigationController?.present(vc, animated: true)
+    }
+    
     func selectObjectTapped(fileUrl: URL){
-        
         if fileUrl.pathExtension == "" {
             let vc = self.storyboard?.instantiateViewController(withIdentifier: "ViewController") as! ViewController
             vc.documentsURL = fileUrl

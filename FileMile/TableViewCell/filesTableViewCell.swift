@@ -17,7 +17,6 @@ class filesTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         setupCell()
-        
     }
 }
 
@@ -40,8 +39,5 @@ extension filesTableViewCell {
     func setupCell(){
         contentImageView.layer.cornerRadius = 25
     }
-    
-    func handlePdf(){
-        
-    }
+
 }

@@ -19,6 +19,8 @@
 		34F19E2D288BF612009BE1CA /* FileMileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F19E2C288BF612009BE1CA /* FileMileTests.swift */; };
 		34F19E37288BF612009BE1CA /* FileMileUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F19E36288BF612009BE1CA /* FileMileUITests.swift */; };
 		34F19E39288BF612009BE1CA /* FileMileUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F19E38288BF612009BE1CA /* FileMileUITestsLaunchTests.swift */; };
+		6C557CAF28A25E2A00A73CAF /* AddViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C557CAE28A25E2A00A73CAF /* AddViewController.swift */; };
+		6C557CB128A286B800A73CAF /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C557CB028A286B800A73CAF /* Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +57,8 @@
 		34F19E32288BF612009BE1CA /* FileMileUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FileMileUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		34F19E36288BF612009BE1CA /* FileMileUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileMileUITests.swift; sourceTree = "<group>"; };
 		34F19E38288BF612009BE1CA /* FileMileUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileMileUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		6C557CAE28A25E2A00A73CAF /* AddViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddViewController.swift; sourceTree = "<group>"; };
+		6C557CB028A286B800A73CAF /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,11 +122,13 @@
 				34F19E17288BF610009BE1CA /* SceneDelegate.swift */,
 				34F19E19288BF610009BE1CA /* ViewController.swift */,
 				34C8EE0A2897FEEF00692C01 /* PdfViewController.swift */,
-				34B2AAC1288C35AE00F3E8F8 /* TableViewCell */,
+				6C557CB028A286B800A73CAF /* Extensions.swift */,
+				6C557CAE28A25E2A00A73CAF /* AddViewController.swift */,
 				34F19E1B288BF610009BE1CA /* Main.storyboard */,
-				34F19E1E288BF612009BE1CA /* Assets.xcassets */,
 				34F19E20288BF612009BE1CA /* LaunchScreen.storyboard */,
+				34B2AAC1288C35AE00F3E8F8 /* TableViewCell */,
 				34F19E23288BF612009BE1CA /* Info.plist */,
+				34F19E1E288BF612009BE1CA /* Assets.xcassets */,
 			);
 			path = FileMile;
 			sourceTree = "<group>";
@@ -233,7 +239,6 @@
 			);
 			mainGroup = 34F19E09288BF610009BE1CA;
 			packageReferences = (
-				34B2AABC288C292F00F3E8F8 /* XCRemoteSwiftPackageReference "FileBrowser" */,
 			);
 			productRefGroup = 34F19E13288BF610009BE1CA /* Products */;
 			projectDirPath = "";
@@ -281,9 +286,11 @@
 			files = (
 				34C8EE0B2897FEEF00692C01 /* PdfViewController.swift in Sources */,
 				34F19E1A288BF610009BE1CA /* ViewController.swift in Sources */,
+				6C557CAF28A25E2A00A73CAF /* AddViewController.swift in Sources */,
 				34B2AABF288C35AA00F3E8F8 /* filesTableViewCell.swift in Sources */,
 				34F19E16288BF610009BE1CA /* AppDelegate.swift in Sources */,
 				34F19E18288BF610009BE1CA /* SceneDelegate.swift in Sources */,
+				6C557CB128A286B800A73CAF /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -627,17 +634,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		34B2AABC288C292F00F3E8F8 /* XCRemoteSwiftPackageReference "FileBrowser" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/marmelroy/FileBrowser";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
 	};
 	rootObject = 34F19E0A288BF610009BE1CA /* Project object */;
 }

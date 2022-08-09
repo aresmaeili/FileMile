@@ -73,8 +73,105 @@
             </objects>
             <point key="canvasLocation" x="955" y="-579"/>
         </scene>
+        <!--Add View Controller-->
+        <scene sceneID="Epr-IK-Hkk">
+            <objects>
+                <viewController storyboardIdentifier="AddViewController" id="aTr-PH-Z2U" customClass="AddViewController" customModule="FileMile" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="MW8-YY-yHr">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2V6-ts-yiN">
+                                <rect key="frame" x="0.0" y="581.5" width="414" height="314.5"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </view>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="mjx-PV-S58">
+                                <rect key="frame" x="32" y="647" width="350" height="160"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fyl-Je-n1x">
+                                        <rect key="frame" x="0.0" y="0.0" width="160" height="160"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="Fyl-Je-n1x" secondAttribute="height" id="1Qa-eB-5ip"/>
+                                        </constraints>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" title="Button" image="file">
+                                            <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="default"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q89-Nj-uxL">
+                                        <rect key="frame" x="190" y="0.0" width="160" height="160"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="q89-Nj-uxL" secondAttribute="height" multiplier="1:1" id="JTn-cM-l5M"/>
+                                        </constraints>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" title="Button" image="folder">
+                                            <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="default"/>
+                                        </state>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="q89-Nj-uxL" firstAttribute="height" secondItem="Fyl-Je-n1x" secondAttribute="height" id="wKV-TA-1G2"/>
+                                </constraints>
+                            </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bsS-Iu-3A7">
+                                <rect key="frame" x="32" y="823" width="350" height="31"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Cancle"/>
+                                <connections>
+                                    <action selector="cancelButtonAction:" destination="aTr-PH-Z2U" eventType="touchUpInside" id="e6g-s8-w98"/>
+                                </connections>
+                            </button>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="a40-O1-aW6">
+                                <rect key="frame" x="32" y="621.5" width="350" height="20.5"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Import File" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5i0-5G-RJf">
+                                        <rect key="frame" x="0.0" y="0.0" width="175" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Create New Folder" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qC1-aC-wZw">
+                                        <rect key="frame" x="175" y="0.0" width="175" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="duw-ck-ou6"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="mjx-PV-S58" firstAttribute="leading" secondItem="duw-ck-ou6" secondAttribute="leading" constant="32" id="5fr-Z3-IZ7"/>
+                            <constraint firstItem="bsS-Iu-3A7" firstAttribute="top" secondItem="mjx-PV-S58" secondAttribute="bottom" constant="16" id="FYn-TL-68V"/>
+                            <constraint firstItem="duw-ck-ou6" firstAttribute="bottom" secondItem="bsS-Iu-3A7" secondAttribute="bottom" constant="8" id="Jsb-KT-gKF"/>
+                            <constraint firstAttribute="bottom" secondItem="2V6-ts-yiN" secondAttribute="bottom" id="L6T-Rd-f5S"/>
+                            <constraint firstItem="2V6-ts-yiN" firstAttribute="leading" secondItem="MW8-YY-yHr" secondAttribute="leading" id="MZ2-Sa-cRb"/>
+                            <constraint firstItem="a40-O1-aW6" firstAttribute="leading" secondItem="mjx-PV-S58" secondAttribute="leading" id="XcB-1p-l4W"/>
+                            <constraint firstItem="duw-ck-ou6" firstAttribute="trailing" secondItem="mjx-PV-S58" secondAttribute="trailing" constant="32" id="eQg-8v-d4g"/>
+                            <constraint firstItem="a40-O1-aW6" firstAttribute="trailing" secondItem="mjx-PV-S58" secondAttribute="trailing" id="lNT-Ee-9Vv"/>
+                            <constraint firstItem="bsS-Iu-3A7" firstAttribute="trailing" secondItem="mjx-PV-S58" secondAttribute="trailing" id="mCH-Os-DAR"/>
+                            <constraint firstItem="2V6-ts-yiN" firstAttribute="top" secondItem="a40-O1-aW6" secondAttribute="top" constant="-40" id="qvW-3A-x4W"/>
+                            <constraint firstItem="duw-ck-ou6" firstAttribute="trailing" secondItem="2V6-ts-yiN" secondAttribute="trailing" id="rOj-iQ-U1Z"/>
+                            <constraint firstItem="mjx-PV-S58" firstAttribute="top" secondItem="a40-O1-aW6" secondAttribute="bottom" constant="5" id="rzP-Fl-yVS"/>
+                            <constraint firstItem="bsS-Iu-3A7" firstAttribute="leading" secondItem="mjx-PV-S58" secondAttribute="leading" id="tTb-UO-3Pf"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="backView" destination="2V6-ts-yiN" id="2O8-nb-VWU"/>
+                        <outlet property="cancelButton" destination="bsS-Iu-3A7" id="Z0x-d1-FmX"/>
+                        <outlet property="importButton" destination="Fyl-Je-n1x" id="JtW-Lc-Rhv"/>
+                        <outlet property="newFolderButton" destination="q89-Nj-uxL" id="sIh-xK-0MW"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="LMH-V9-iQR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1744.9275362318842" y="-579.24107142857144"/>
+        </scene>
     </scenes>
     <resources>
+        <image name="file" width="180" height="180"/>
+        <image name="folder" width="379.5" height="216"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
