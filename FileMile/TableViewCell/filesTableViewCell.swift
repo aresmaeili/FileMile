@@ -29,6 +29,11 @@ extension filesTableViewCell {
             contentImageView.image = UIImage(named: "folder")
             fileTypeLabel.text = data.pathExtension
             return
+        case "pdf":
+            let thumbnailSize = CGSize(width: 100, height: 100)
+            let thumbnail = generatePdfThumbnail(of: thumbnailSize, for: data, atPage: 0)
+            contentImageView.image = thumbnail
+            fileTypeLabel.text = data.pathExtension
         default:
             contentImageView.image = UIImage(named: "file")
             fileTypeLabel.text = data.pathExtension
@@ -37,7 +42,16 @@ extension filesTableViewCell {
     }
     
     func setupCell(){
-        contentImageView.layer.cornerRadius = 25
+        contentImageView.layer.cornerRadius = 10
     }
 
+}
+
+//MARK: - PDF Functions
+extension filesTableViewCell {
+    func generatePdfThumbnail(of thumbnailSize: CGSize , for documentUrl: URL, atPage pageIndex: Int) -> UIImage? {
+        let pdfDocument = PDFDocument(url: documentUrl)
+        let pdfDocumentPage = pdfDocument?.page(at: pageIndex)
+        return pdfDocumentPage?.thumbnail(of: thumbnailSize, for: PDFDisplayBox.trimBox)
+    }
 }

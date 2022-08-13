@@ -36,6 +36,4 @@ class AddViewController : UIViewController {
         importButton.setTitle("", for: .normal)
         newFolderButton.setTitle("", for: .normal)
     }
-    
-    
 }

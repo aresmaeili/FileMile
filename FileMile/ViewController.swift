@@ -33,7 +33,6 @@ class ViewController: UIViewController {
 
 //MARK: - Functions
 extension ViewController{
-    
     func createDirectory(FolderName: String){
         guard let url = FileManager.default.urls(for: .documentDirectory , in: .userDomainMask).first else { return }
         let newFolder = url.appendingPathComponent("\(FolderName)")
@@ -83,7 +82,6 @@ extension ViewController{
 
 //MARK: - Setup TableView
 extension ViewController: UITableViewDelegate,UITableViewDataSource {
-    
     func setupTableView(){
         filesTableView.register(UINib(nibName: "filesTableViewCell", bundle: nil), forCellReuseIdentifier: "filesTableViewCell")
         filesTableView.delegate = self
@@ -109,3 +107,5 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource {
         
     }
 }
+
+
