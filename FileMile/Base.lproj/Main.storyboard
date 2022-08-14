@@ -97,6 +97,9 @@
                                         <state key="normal" title="Button" image="file">
                                             <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="default"/>
                                         </state>
+                                        <connections>
+                                            <action selector="importButtonAction:" destination="aTr-PH-Z2U" eventType="touchUpInside" id="Cgh-0r-yCU"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q89-Nj-uxL">
                                         <rect key="frame" x="190" y="0.0" width="160" height="160"/>
@@ -107,6 +110,9 @@
                                         <state key="normal" title="Button" image="folder">
                                             <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="default"/>
                                         </state>
+                                        <connections>
+                                            <action selector="newFolderButtonAction:" destination="aTr-PH-Z2U" eventType="touchUpInside" id="5Vv-gk-Cbu"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <constraints>
@@ -167,6 +173,89 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LMH-V9-iQR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1744.9275362318842" y="-579.24107142857144"/>
+        </scene>
+        <!--Add New Folder View Controller-->
+        <scene sceneID="8Ba-8P-Gvq">
+            <objects>
+                <viewController storyboardIdentifier="AddNewFolderViewController" id="BK5-Rb-DWL" customClass="AddNewFolderViewController" customModule="FileMile" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="pSW-SH-slt">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="y9z-JA-YWc">
+                                <rect key="frame" x="0.0" y="482" width="414" height="414"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="7h3-ZO-SKn">
+                                        <rect key="frame" x="32" y="32" width="350" height="350"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Type your NewFolder name:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4B0-GS-W6p">
+                                                <rect key="frame" x="16" y="0.0" width="318" height="84.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="NewFolder NAme" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="LRr-xB-het">
+                                                <rect key="frame" x="16" y="88.5" width="318" height="84.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits"/>
+                                            </textField>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Zis-vB-biD">
+                                                <rect key="frame" x="16" y="177" width="318" height="84.5"/>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="plain" title="Confirm"/>
+                                                <connections>
+                                                    <action selector="confirmbuttonAction:" destination="BK5-Rb-DWL" eventType="touchUpInside" id="uEo-Nl-Inq"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" role="cancel" translatesAutoresizingMaskIntoConstraints="NO" id="FWc-DJ-8Se">
+                                                <rect key="frame" x="16" y="265.5" width="318" height="84.5"/>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="plain" title="Cancel"/>
+                                                <connections>
+                                                    <action selector="cancelButtonAction:" destination="BK5-Rb-DWL" eventType="touchUpInside" id="6UU-uK-618"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="LRr-xB-het" secondAttribute="trailing" constant="16" id="VHL-2c-Meb"/>
+                                            <constraint firstItem="FWc-DJ-8Se" firstAttribute="leading" secondItem="7h3-ZO-SKn" secondAttribute="leading" constant="16" id="Wji-HZ-yBF"/>
+                                            <constraint firstAttribute="trailing" secondItem="4B0-GS-W6p" secondAttribute="trailing" constant="16" id="cOf-1V-ohA"/>
+                                            <constraint firstItem="4B0-GS-W6p" firstAttribute="leading" secondItem="7h3-ZO-SKn" secondAttribute="leading" constant="16" id="mZl-HQ-vH9"/>
+                                            <constraint firstAttribute="trailing" secondItem="Zis-vB-biD" secondAttribute="trailing" constant="16" id="nhE-i9-Kjn"/>
+                                            <constraint firstAttribute="trailing" secondItem="FWc-DJ-8Se" secondAttribute="trailing" constant="16" id="oM1-Fl-zog"/>
+                                            <constraint firstItem="LRr-xB-het" firstAttribute="leading" secondItem="7h3-ZO-SKn" secondAttribute="leading" constant="16" id="pgg-bA-lJg"/>
+                                            <constraint firstItem="Zis-vB-biD" firstAttribute="leading" secondItem="7h3-ZO-SKn" secondAttribute="leading" constant="16" id="vyL-TU-hZt"/>
+                                        </constraints>
+                                    </stackView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="7h3-ZO-SKn" firstAttribute="leading" secondItem="y9z-JA-YWc" secondAttribute="leading" constant="32" id="BoD-Sg-W3x"/>
+                                    <constraint firstAttribute="bottom" secondItem="7h3-ZO-SKn" secondAttribute="bottom" constant="32" id="Rcg-B9-jdh"/>
+                                    <constraint firstAttribute="trailing" secondItem="7h3-ZO-SKn" secondAttribute="trailing" constant="32" id="nyw-Hf-4ky"/>
+                                    <constraint firstItem="7h3-ZO-SKn" firstAttribute="top" secondItem="y9z-JA-YWc" secondAttribute="top" constant="32" id="ve5-Lj-RDt"/>
+                                    <constraint firstAttribute="width" secondItem="y9z-JA-YWc" secondAttribute="height" id="zjd-pU-7aI"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="Qg1-HX-uFm"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Qg1-HX-uFm" firstAttribute="trailing" secondItem="y9z-JA-YWc" secondAttribute="trailing" id="5iF-LI-P5l"/>
+                            <constraint firstItem="y9z-JA-YWc" firstAttribute="leading" secondItem="Qg1-HX-uFm" secondAttribute="leading" id="bD4-qb-v6G"/>
+                            <constraint firstAttribute="bottom" secondItem="y9z-JA-YWc" secondAttribute="bottom" id="sHD-Sc-lcH"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="cancelButton" destination="FWc-DJ-8Se" id="Dr0-Fw-jfo"/>
+                        <outlet property="confirmButton" destination="Zis-vB-biD" id="SQZ-ap-RWg"/>
+                        <outlet property="newFolderNameTextField" destination="LRr-xB-het" id="AYq-FQ-eEW"/>
+                        <outlet property="parentView" destination="y9z-JA-YWc" id="jNn-q9-m9e"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Sr4-7O-Det" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2430" y="-579"/>
         </scene>
     </scenes>
     <resources>

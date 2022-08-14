@@ -8,13 +8,27 @@
 import UIKit
 import PDFKit
 
+enum sortType {
+    case nameAsc,nameDesc,dateAsc,dateDesc
+}
+
 class ViewController: UIViewController {
     
     @IBOutlet weak var filesTableView: UITableView!
     
-    var fileURLs : [URL] = []
+    var sortingType : sortType = .nameAsc {
+        didSet{
+            sortingBy(sortBy: sortingType)
+        }
+    }
     let fileManager = FileManager.default
     var documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    var fileURLs : [URL] = []{
+        didSet{
+            filesTableView.reloadData()
+        }
+    }
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,18 +36,14 @@ class ViewController: UIViewController {
         createDirectory(FolderName: "FileMile")
         setupFileManager(url: documentsURL)
         setupTableView()
-    }
-    func getDocumentsDirectory() -> URL {
-        // find all possible documents directories for this user
-        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        // just send back the first one, which ought to be the only one
-        return paths[0]
+//        sortingBy(sortBy: sortingType)
     }
 }
 
 //MARK: - Functions
 extension ViewController{
     func createDirectory(FolderName: String){
+        
         guard let url = FileManager.default.urls(for: .documentDirectory , in: .userDomainMask).first else { return }
         let newFolder = url.appendingPathComponent("\(FolderName)")
         do{
@@ -46,21 +56,44 @@ extension ViewController{
     }
     
     func setupFileManager(url: URL){
-//        let newFolderItem = UIBarButtonItem(title: "New Folder", style: .plain, target: self, action: #selector(addTapped))
-        let addItem = UIBarButtonItem(title: "import", style: .plain, target: self, action: #selector(addTapped))
-
-        navigationItem.rightBarButtonItems =  [addItem]
+        let addItem = UIBarButtonItem(title: "Import", style: .plain, target: self, action: #selector(addTapped))
+        let sortItem = UIBarButtonItem(title: "Sort", style: .plain, target: self, action: #selector(sortTapped))
+        navigationItem.rightBarButtonItems =  [addItem,sortItem]
         self.title = url.lastPathComponent.removingPercentEncoding
-        do {
-            fileURLs = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: nil)
-        } catch {
-            print("Error while enumerating files \(documentsURL.path): \(error.localizedDescription)")
+        sortingBy(sortBy: sortingType)
         }
-    }
     
     @objc func addTapped(){
         let vc = self.storyboard?.instantiateViewController(withIdentifier: "AddViewController") as! AddViewController
+        vc.url = documentsURL
+        vc.delegate = self
         navigationController?.present(vc, animated: true)
+    }
+    
+    @objc func sortTapped(){
+        let alert = UIAlertController(title: "Sort by:" , message: "", preferredStyle: .actionSheet)
+        let sortByNameAscAction = UIAlertAction(title: "Name Asc", style: .default) {
+               UIAlertAction in
+            self.sortingType = .nameAsc
+           }
+        let sortByNameDescAction = UIAlertAction(title: "Name Desc", style: .default) {
+               UIAlertAction in
+            self.sortingType = .nameDesc
+           }
+        let sortByDateAscAction = UIAlertAction(title: "Date Asc", style: .default) {
+               UIAlertAction in
+            self.sortingType = .dateAsc
+           }
+        let sortByDateDescAction = UIAlertAction(title: "Date Desc", style: .default) {
+               UIAlertAction in
+            self.sortingType = .dateDesc
+           }
+        alert.addAction(sortByNameAscAction)
+        alert.addAction(sortByNameDescAction)
+        alert.addAction(sortByDateAscAction)
+        alert.addAction(sortByDateDescAction)
+        self.present(alert, animated: true, completion: nil)
+
     }
     
     func selectObjectTapped(fileUrl: URL){
@@ -78,6 +111,43 @@ extension ViewController{
             UIApplication.shared.open(url)
         }
     }
+    
+    func sortingBy(sortBy: sortType){
+        switch sortBy {
+        case .nameAsc:
+            fileURLs = try! FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: [.creationDateKey], options: .skipsHiddenFiles).sorted(by: {
+                if let date1 = try? $0.resourceValues(forKeys: [.nameKey]).name?.lowercased(),
+                   let date2 = try? $1.resourceValues(forKeys: [.nameKey]).name?.lowercased() {
+                        return date1 < date2
+                    }
+                    return false
+                })
+        case .nameDesc:
+            fileURLs = try! FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: [.creationDateKey], options: .skipsHiddenFiles).sorted(by: {
+                if let date1 = try? $0.resourceValues(forKeys: [.nameKey]).name?.lowercased(),
+                   let date2 = try? $1.resourceValues(forKeys: [.nameKey]).name?.lowercased() {
+                        return date1 > date2
+                    }
+                    return false
+                })
+        case .dateAsc:
+            fileURLs = try! FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: [.creationDateKey], options: .skipsHiddenFiles).sorted(by: {
+                if let date1 = try? $0.resourceValues(forKeys: [.creationDateKey]).creationDate,
+                   let date2 = try? $1.resourceValues(forKeys: [.creationDateKey]).creationDate {
+                        return date1 < date2
+                    }
+                    return false
+                })
+        case .dateDesc:
+            fileURLs = try! FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: [.creationDateKey], options: .skipsHiddenFiles).sorted(by: {
+                if let date1 = try? $0.resourceValues(forKeys: [.creationDateKey]).creationDate,
+                   let date2 = try? $1.resourceValues(forKeys: [.creationDateKey]).creationDate {
+                        return date1 > date2
+                    }
+                    return false
+                })
+        }
+    }
 }
 
 //MARK: - Setup TableView
@@ -86,6 +156,7 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource {
         filesTableView.register(UINib(nibName: "filesTableViewCell", bundle: nil), forCellReuseIdentifier: "filesTableViewCell")
         filesTableView.delegate = self
         filesTableView.dataSource = self
+        filesTableView.reloadData()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -104,7 +175,24 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectObjectTapped(fileUrl: fileURLs[indexPath.row])
-        
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            do {
+            try FileManager.default.removeItem(at: fileURLs[indexPath.row])
+                setupFileManager(url: documentsURL)
+            }catch{
+                BannerManager.showMessage(errorMessageStr: "Error Delete", .warning)
+            }
+        }
+    }
+}
+
+
+extension ViewController: addViewControllerDelegate {
+    func closedView() {
+        setupFileManager(url: documentsURL)
     }
 }
 
