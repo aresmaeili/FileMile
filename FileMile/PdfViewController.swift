@@ -17,11 +17,12 @@ class PdfViewController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         pdfFileSetup(fileUrl: pdfUrl)
+        createMenu()
     }
 }
 
 //MARK: - Functions
-extension PdfViewController{
+extension PdfViewController: PDFViewDelegate{
     
     func pdfFileSetup(fileUrl: URL){
         pdfView.delegate = self
@@ -36,7 +37,25 @@ extension PdfViewController{
 }
 
 //MARK: - PDF Delegates
-extension PdfViewController: PDFViewDelegate{
+extension PdfViewController{
 
+    private func createMenu() {
+        let highlightItem = UIMenuItem(title: "Highlight", action: #selector(highlight(_:)))
+        UIMenuController.shared.menuItems = [highlightItem]
+    }
+        
+    @objc private func highlight(_ sender: UIMenuController?) {
+        guard let currentSelection = pdfView.currentSelection else { return }
+        let selections = currentSelection.selectionsByLine()
+        guard let page = selections.first?.pages.first else { return }
+
+        selections.forEach { selection in
+            let highlight = PDFAnnotation(bounds: selection.bounds(for: page), forType: .highlight, withProperties: nil)
+            highlight.endLineStyle = .square
+            page.addAnnotation(highlight)
+        }
+
+        pdfView.clearSelection()
+    }
 }
 

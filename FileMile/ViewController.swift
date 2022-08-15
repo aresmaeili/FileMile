@@ -14,6 +14,7 @@ enum sortType {
 
 class ViewController: UIViewController {
     
+    
     @IBOutlet weak var filesTableView: UITableView!
     
     var sortingType : sortType = .nameAsc {
@@ -28,7 +29,11 @@ class ViewController: UIViewController {
             filesTableView.reloadData()
         }
     }
-
+    var filteredFileURLs : [URL] = []{
+        didSet{
+            filesTableView.reloadData()
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,7 +41,7 @@ class ViewController: UIViewController {
         createDirectory(FolderName: "FileMile")
         setupFileManager(url: documentsURL)
         setupTableView()
-//        sortingBy(sortBy: sortingType)
+        //        sortingBy(sortBy: sortingType)
     }
 }
 
@@ -61,7 +66,7 @@ extension ViewController{
         navigationItem.rightBarButtonItems =  [addItem,sortItem]
         self.title = url.lastPathComponent.removingPercentEncoding
         sortingBy(sortBy: sortingType)
-        }
+    }
     
     @objc func addTapped(){
         let vc = self.storyboard?.instantiateViewController(withIdentifier: "AddViewController") as! AddViewController
@@ -73,27 +78,27 @@ extension ViewController{
     @objc func sortTapped(){
         let alert = UIAlertController(title: "Sort by:" , message: "", preferredStyle: .actionSheet)
         let sortByNameAscAction = UIAlertAction(title: "Name Asc", style: .default) {
-               UIAlertAction in
+            UIAlertAction in
             self.sortingType = .nameAsc
-           }
+        }
         let sortByNameDescAction = UIAlertAction(title: "Name Desc", style: .default) {
-               UIAlertAction in
+            UIAlertAction in
             self.sortingType = .nameDesc
-           }
+        }
         let sortByDateAscAction = UIAlertAction(title: "Date Asc", style: .default) {
-               UIAlertAction in
+            UIAlertAction in
             self.sortingType = .dateAsc
-           }
+        }
         let sortByDateDescAction = UIAlertAction(title: "Date Desc", style: .default) {
-               UIAlertAction in
+            UIAlertAction in
             self.sortingType = .dateDesc
-           }
+        }
         alert.addAction(sortByNameAscAction)
         alert.addAction(sortByNameDescAction)
         alert.addAction(sortByDateAscAction)
         alert.addAction(sortByDateDescAction)
         self.present(alert, animated: true, completion: nil)
-
+        
     }
     
     func selectObjectTapped(fileUrl: URL){
@@ -118,34 +123,34 @@ extension ViewController{
             fileURLs = try! FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: [.creationDateKey], options: .skipsHiddenFiles).sorted(by: {
                 if let date1 = try? $0.resourceValues(forKeys: [.nameKey]).name?.lowercased(),
                    let date2 = try? $1.resourceValues(forKeys: [.nameKey]).name?.lowercased() {
-                        return date1 < date2
-                    }
-                    return false
-                })
+                    return date1 < date2
+                }
+                return false
+            })
         case .nameDesc:
             fileURLs = try! FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: [.creationDateKey], options: .skipsHiddenFiles).sorted(by: {
                 if let date1 = try? $0.resourceValues(forKeys: [.nameKey]).name?.lowercased(),
                    let date2 = try? $1.resourceValues(forKeys: [.nameKey]).name?.lowercased() {
-                        return date1 > date2
-                    }
-                    return false
-                })
+                    return date1 > date2
+                }
+                return false
+            })
         case .dateAsc:
             fileURLs = try! FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: [.creationDateKey], options: .skipsHiddenFiles).sorted(by: {
                 if let date1 = try? $0.resourceValues(forKeys: [.creationDateKey]).creationDate,
                    let date2 = try? $1.resourceValues(forKeys: [.creationDateKey]).creationDate {
-                        return date1 < date2
-                    }
-                    return false
-                })
+                    return date1 < date2
+                }
+                return false
+            })
         case .dateDesc:
             fileURLs = try! FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: [.creationDateKey], options: .skipsHiddenFiles).sorted(by: {
                 if let date1 = try? $0.resourceValues(forKeys: [.creationDateKey]).creationDate,
                    let date2 = try? $1.resourceValues(forKeys: [.creationDateKey]).creationDate {
-                        return date1 > date2
-                    }
-                    return false
-                })
+                    return date1 > date2
+                }
+                return false
+            })
         }
     }
 }
@@ -180,7 +185,7 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             do {
-            try FileManager.default.removeItem(at: fileURLs[indexPath.row])
+                try FileManager.default.removeItem(at: fileURLs[indexPath.row])
                 setupFileManager(url: documentsURL)
             }catch{
                 BannerManager.showMessage(errorMessageStr: "Error Delete", .warning)
@@ -189,7 +194,15 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource {
     }
 }
 
+//MARK: - Setup SearchBar
+extension ViewController  {
+  
+}
 
+
+
+
+//MARK: - Setup Delegates
 extension ViewController: addViewControllerDelegate {
     func closedView() {
         setupFileManager(url: documentsURL)

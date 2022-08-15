@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import MobileCoreServices
 
 protocol addViewControllerDelegate: AnyObject {
     func closedView()
@@ -54,7 +55,8 @@ extension AddViewController {
     }
     
     func importButtonDidTap(){
-        
+        openDocumentPicker()
+
     }
     
     func newFolderButtonDidTap(){
@@ -64,6 +66,36 @@ extension AddViewController {
         let nav = UINavigationController(rootViewController: vc)
         present(nav, animated: true)
     }
+}
+
+
+extension AddViewController:  UIDocumentPickerDelegate {
+    func openDocumentPicker(){
+        let documentPicker = UIDocumentPickerViewController(documentTypes: [String(kUTTypeText),String(kUTTypeContent),String(kUTTypeItem),String(kUTTypeData)], in: .import)
+        documentPicker.delegate = self
+        self.present(documentPicker, animated: true)
+    }
+    
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        guard let url = urls.first else { return }
+//        for url in urls {
+        secureCopyItem(at: url, to: (self.url.appendingPathComponent("\(url.lastPathComponent)")))
+//        }
+    print(urls)
+    }
+    
+    func secureCopyItem(at srcURL: URL, to dstURL: URL){
+            do {
+                if FileManager.default.fileExists(atPath: dstURL.path) {
+                    try FileManager.default.removeItem(at: dstURL)
+                }
+                try FileManager.default.copyItem(at: srcURL, to: dstURL)
+            } catch (let error) {
+                print("Cannot copy item at \(srcURL) to \(dstURL): \(error)")
+            }
+        delegate?.closedView()
+        self.dismiss(animated: true) 
+        }
 }
 
 extension AddViewController: AddNewFolderViewControllerDelegate{
