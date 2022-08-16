@@ -30,6 +30,7 @@ class AddViewController : UIViewController {
         dismiss(animated: true)
     }
     
+   
     var url : URL!
     weak var delegate : addViewControllerDelegate?
     
@@ -53,9 +54,13 @@ extension AddViewController {
         importButton.setTitle("", for: .normal)
         newFolderButton.setTitle("", for: .normal)
     }
-    
+                
     func importButtonDidTap(){
         openDocumentPicker()
+    }
+    
+    func downloadButtonDidTap(){
+    
     }
     
     func newFolderButtonDidTap(){
