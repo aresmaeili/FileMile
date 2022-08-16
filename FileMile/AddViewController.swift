@@ -56,7 +56,6 @@ extension AddViewController {
     
     func importButtonDidTap(){
         openDocumentPicker()
-
     }
     
     func newFolderButtonDidTap(){
@@ -65,6 +64,30 @@ extension AddViewController {
         vc.delegate = self
         let nav = UINavigationController(rootViewController: vc)
         present(nav, animated: true)
+    }
+    
+    func insertExistedFile(sourceUrl: URL,destinationUrl: URL , insertType: vcType){
+        let alert = UIAlertController(title: "EXISTED", message: "Your file Existed", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Replace", style: .default, handler: { [ weak alert] (_) in
+            do{
+            try FileManager.default.removeItem(at: destinationUrl)
+                switch insertType {
+                case .normal:
+                    return
+                case .copy:
+                    try FileManager.default.copyItem(at: sourceUrl, to: destinationUrl)
+                case .move:
+                    try FileManager.default.moveItem(at: sourceUrl, to: destinationUrl)
+                }
+            } catch (let error) {
+                print("Cannot insert item at \(sourceUrl) to \(destinationUrl): \(error)")
+            }
+            self.delegate?.closedView()
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { [self, weak alert] (_) in
+            self.dismiss(animated: true)
+        }))
+        self.present(alert, animated: true, completion: nil)
     }
 }
 
@@ -78,20 +101,23 @@ extension AddViewController:  UIDocumentPickerDelegate {
     
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         guard let url = urls.first else { return }
-//        for url in urls {
         secureCopyItem(at: url, to: (self.url.appendingPathComponent("\(url.lastPathComponent)")))
-//        }
     print(urls)
     }
     
-    func secureCopyItem(at srcURL: URL, to dstURL: URL){
+    func secureCopyItem(at sourceUrl: URL, to destinationUrl: URL){
             do {
-                if FileManager.default.fileExists(atPath: dstURL.path) {
-                    try FileManager.default.removeItem(at: dstURL)
+                if destinationUrl.pathExtension == "pdf"{
+                if FileManager.default.fileExists(atPath: destinationUrl.path) {
+                    insertExistedFile(sourceUrl: sourceUrl, destinationUrl: destinationUrl , insertType: .copy)
+                }else{
+                    try FileManager.default.copyItem(at: sourceUrl, to: destinationUrl)
                 }
-                try FileManager.default.copyItem(at: srcURL, to: dstURL)
+                }else{
+                    BannerManager.showMessage(errorMessageStr: "Only PDF Files", .warning)
+                }
             } catch (let error) {
-                print("Cannot copy item at \(srcURL) to \(dstURL): \(error)")
+                print("Cannot copy item at \(sourceUrl) to \(destinationUrl): \(error)")
             }
         delegate?.closedView()
         self.dismiss(animated: true) 

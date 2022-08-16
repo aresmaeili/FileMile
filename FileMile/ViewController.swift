@@ -11,12 +11,12 @@ import PDFKit
 enum vcType{
     case normal,copy,move
 }
+
 enum sortType {
     case nameAsc,nameDesc,dateAsc,dateDesc
 }
 
 class ViewController: UIViewController {
-    
     
     @IBOutlet weak var cancelButton: UIButton!
     @IBOutlet weak var insertButton: UIButton!
@@ -26,13 +26,13 @@ class ViewController: UIViewController {
     @IBAction func cancelButtonAction(_ sender: Any) {
         navigationController?.popToRootViewController(animated: true)
     }
-
+    
     @IBAction func insertButtonAction(_ sender: Any) {
         insertButtonTapped(type: vcType)
     }
     
     var optionsOpenisHidden = true
-    var vcType: vcType = .normal 
+    var vcType: vcType = .normal
     var sortingType : sortType = .nameAsc {
         didSet{
             sortingBy(sortBy: sortingType)
@@ -55,14 +55,13 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        createDirectory(FolderName: "FileMile")
         setupFileManager(url: destinationsURL)
         setupTableView()
         setupOptions()
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        sortingBy(sortBy: .nameAsc)
+        sortingBy(sortBy: sortingType)
     }
 }
 
@@ -81,35 +80,65 @@ extension ViewController{
         }
     }
     
+    func insertExistedFile(sourceUrl: URL,destinationUrl: URL , insertType: vcType){
+        let alert = UIAlertController(title: "EXISTED", message: "Your file Existed", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Replace", style: .default, handler: { [ weak alert] (_) in
+            do{
+                try FileManager.default.removeItem(at: destinationUrl)
+                switch insertType {
+                case .normal:
+                    return
+                case .copy:
+                    try FileManager.default.copyItem(at: sourceUrl, to: destinationUrl)
+                case .move:
+                    try FileManager.default.moveItem(at: sourceUrl, to: destinationUrl)
+                }
+                self.dismiss(animated: true)
+                self.navigationController?.popToRootViewController(animated: true)
+            } catch (let error) {
+                print("Cannot insert item at \(sourceUrl) to \(destinationUrl): \(error)")
+            }
+            self.sortingBy(sortBy: self.sortingType)
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { [self, weak alert] (_) in
+            self.dismiss(animated: true)
+            navigationController?.popToRootViewController(animated: true)
+
+        }))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
     func secureCopyItem(at srcURL: URL, to dstURL: URL){
-            do {
-                if FileManager.default.fileExists(atPath: dstURL.path) {
-                    try FileManager.default.removeItem(at: dstURL)
-                }
+        do {
+            if FileManager.default.fileExists(atPath: dstURL.path) {
+                insertExistedFile(sourceUrl: srcURL, destinationUrl: dstURL, insertType: .copy)
+            }else{
                 try FileManager.default.copyItem(at: srcURL, to: dstURL)
-            } catch (let error) {
-                print("Cannot copy item at \(srcURL) to \(dstURL): \(error)")
             }
+        } catch (let error) {
+            print("Cannot copy item at \(srcURL) to \(dstURL): \(error)")
+        }
         vcType = .normal
         navigationController?.popToRootViewController(animated: true)
-        }
-
+    }
+    
     func secureMoveItem(at srcURL: URL, to dstURL: URL){
-            do {
-                if FileManager.default.fileExists(atPath: dstURL.path) {
-                    try FileManager.default.removeItem(at: dstURL)
-                }
-                try FileManager.default.moveItem(at: srcURL, to: dstURL)
-            } catch (let error) {
-                print("Cannot Move item at \(srcURL) to \(dstURL): \(error)")
+        do {
+            if FileManager.default.fileExists(atPath: dstURL.path) {
+                insertExistedFile(sourceUrl: srcURL, destinationUrl: dstURL, insertType: .move)
             }
+            try FileManager.default.moveItem(at: srcURL, to: dstURL)
+        } catch (let error) {
+            print("Cannot Move item at \(srcURL) to \(dstURL): \(error)")
+        }
         vcType = .normal
         navigationController?.popToRootViewController(animated: true)
-        }
-
+    }
+    
     func setupFileManager(url: URL){
-        let addItem = UIBarButtonItem(title: "|||", style: .plain, target: self, action: #selector(addedTapped))
-        navigationItem.rightBarButtonItems =  [addItem]
+        let addItem = UIBarButtonItem(title: "📂", style: .plain, target: self, action: #selector(addedTapped))
+        let sortItem = UIBarButtonItem(title: "🔃", style: .plain, target: self, action: #selector(sortTapped))
+        navigationItem.rightBarButtonItems =  [addItem,sortItem]
         self.title = url.lastPathComponent.removingPercentEncoding
         sortingBy(sortBy: sortingType)
     }
@@ -135,17 +164,17 @@ extension ViewController{
         navigationController?.present(vc, animated: true)
     }
     
-    func sortTapped(){
+    @objc func sortTapped(){
         let alert = UIAlertController(title: "Sort by:" , message: "", preferredStyle: .actionSheet)
         let sortByNameAscAction = UIAlertAction(title: "Name Asc", style: .default) {
             UIAlertAction in
             self.sortingType = .nameAsc
-
+            
         }
         let sortByNameDescAction = UIAlertAction(title: "Name Desc", style: .default) {
             UIAlertAction in
             self.sortingType = .nameDesc
-         }
+        }
         let sortByDateAscAction = UIAlertAction(title: "Date Asc", style: .default) {
             UIAlertAction in
             self.sortingType = .dateAsc
@@ -154,6 +183,11 @@ extension ViewController{
             UIAlertAction in
             self.sortingType = .dateDesc
         }
+        let cancelSortByAction = UIAlertAction(title: "Cancel", style: .cancel) {
+            UIAlertAction in
+            self.dismiss(animated: true)
+        }
+        alert.addAction(cancelSortByAction)
         alert.addAction(sortByNameAscAction)
         alert.addAction(sortByNameDescAction)
         alert.addAction(sortByDateAscAction)
@@ -188,6 +222,28 @@ extension ViewController{
         vc.sourcesURL = sourceUrl
         vc.destinationsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func renameTapped(sourceFile: URL , currentName: String , newName: String , fileType:String){
+        do {
+            let path = sourceFile
+            let originPath = path.appendingPathComponent(currentName)
+            var destinationPath = path.appendingPathComponent(newName).appendingPathComponent(fileType)
+            if fileType == "" {
+                destinationPath = path.appendingPathComponent(newName).appendingPathComponent(fileType)
+            }else{
+                destinationPath = path.appendingPathComponent("\(newName).\(fileType)")
+            }
+            if FileManager.default.fileExists(atPath: destinationPath.path) {
+                insertExistedFile(sourceUrl: originPath, destinationUrl: destinationPath, insertType: .move)
+            }else{
+                try FileManager.default.moveItem(at: originPath, to: destinationPath)
+            }
+            destinationsURL = sourcesURL
+            sortingBy(sortBy: sortingType)
+        } catch {
+            print("Error in Rename")
+        }
     }
     
     func setupOptions(){
@@ -233,52 +289,70 @@ extension ViewController{
         }
     }
     
+    func createNameAlert(indexPath: IndexPath){
+        let alert = UIAlertController(title: "Rename", message: "Select your new name", preferredStyle: .alert)
+        alert.addTextField { (textField) in
+            textField.text = ""
+        }
+        alert.addAction(UIAlertAction(title: "Rename", style: .default, handler: { [self, weak alert] (_) in
+            let textField = alert?.textFields![0]
+            guard let sourceName = self.fileURLs[indexPath.row].lastPathComponent.removingPercentEncoding else {return}
+            guard let newName = textField?.text else {return}
+            self.renameTapped(sourceFile: self.destinationsURL , currentName: sourceName , newName: newName, fileType: fileURLs[indexPath.row].pathExtension)
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { [self, weak alert] (_) in
+            self.dismiss(animated: true)
+        }))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
     func sortingBy(sortBy: sortType){
         switch sortBy {
         case .nameAsc:
             do {
-            fileURLs = try FileManager.default.contentsOfDirectory(at: destinationsURL, includingPropertiesForKeys: [.creationDateKey], options: .skipsHiddenFiles).sorted(by: {
-                if let name1 = try? $0.resourceValues(forKeys: [.nameKey]).name?.lowercased(),
-                   let name2 = try? $1.resourceValues(forKeys: [.nameKey]).name?.lowercased() {
-                    return name1 < name2
-                }
-                return false
-            })}catch{
+                fileURLs = try FileManager.default.contentsOfDirectory(at: destinationsURL, includingPropertiesForKeys: [.creationDateKey], options: .skipsHiddenFiles).sorted(by: {
+                    if let name1 = try? $0.resourceValues(forKeys: [.nameKey]).name?.lowercased(),
+                       let name2 = try? $1.resourceValues(forKeys: [.nameKey]).name?.lowercased() {
+                        return name1 < name2
+                    }
+                    return false
+                })
+            }catch{
                 print("error")
             }
         case .nameDesc:
             do {
-            fileURLs = try FileManager.default.contentsOfDirectory(at: destinationsURL, includingPropertiesForKeys: [.creationDateKey], options: .skipsHiddenFiles).sorted(by: {
-                if let name1 = try? $0.resourceValues(forKeys: [.nameKey]).name?.lowercased(),
-                   let name2 = try? $1.resourceValues(forKeys: [.nameKey]).name?.lowercased() {
-                    return name1 > name2
+                fileURLs = try FileManager.default.contentsOfDirectory(at: destinationsURL, includingPropertiesForKeys: [.creationDateKey], options: .skipsHiddenFiles).sorted(by: {
+                    if let name1 = try? $0.resourceValues(forKeys: [.nameKey]).name?.lowercased(),
+                       let name2 = try? $1.resourceValues(forKeys: [.nameKey]).name?.lowercased() {
+                        return name1 > name2
+                    }
+                    return false
+                })}catch{
+                    print("error")
                 }
-                return false
-            })}catch{
-                print("error")
-            }
         case .dateAsc:
             do {
-            fileURLs = try FileManager.default.contentsOfDirectory(at: destinationsURL, includingPropertiesForKeys: [.creationDateKey], options: .skipsHiddenFiles).sorted(by: {
-                if let date1 = try? $0.resourceValues(forKeys: [.creationDateKey]).creationDate,
-                   let date2 = try? $1.resourceValues(forKeys: [.creationDateKey]).creationDate {
-                    return date1 < date2
+                fileURLs = try FileManager.default.contentsOfDirectory(at: destinationsURL, includingPropertiesForKeys: [.creationDateKey], options: .skipsHiddenFiles).sorted(by: {
+                    if let date1 = try? $0.resourceValues(forKeys: [.creationDateKey]).creationDate,
+                       let date2 = try? $1.resourceValues(forKeys: [.creationDateKey]).creationDate {
+                        return date1 < date2
+                    }
+                    return false
+                })}catch{
+                    print("error")
                 }
-                return false
-            })}catch{
-                print("error")
-            }
         case .dateDesc:
             do {
-            fileURLs = try FileManager.default.contentsOfDirectory(at: destinationsURL, includingPropertiesForKeys: [.creationDateKey], options: .skipsHiddenFiles).sorted(by: {
-                if let date1 = try? $0.resourceValues(forKeys: [.creationDateKey]).creationDate,
-                   let date2 = try? $1.resourceValues(forKeys: [.creationDateKey]).creationDate {
-                    return date1 > date2
+                fileURLs = try FileManager.default.contentsOfDirectory(at: destinationsURL, includingPropertiesForKeys: [.creationDateKey], options: .skipsHiddenFiles).sorted(by: {
+                    if let date1 = try? $0.resourceValues(forKeys: [.creationDateKey]).creationDate,
+                       let date2 = try? $1.resourceValues(forKeys: [.creationDateKey]).creationDate {
+                        return date1 > date2
+                    }
+                    return false
+                })}catch{
+                    print("error")
                 }
-                return false
-            })}catch{
-                print("error")
-            }
         }
     }
 }
@@ -328,24 +402,30 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource {
         case .move: return false
         }
     }
+    
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let editAction = UIContextualAction(style: .normal, title: "Move") {
+        let moveAction = UIContextualAction(style: .normal, title: "Move") {
             (action, sourceView, completionHandler) in
             self.moveTapped(sourceUrl: self.fileURLs[indexPath.row])
             completionHandler(true)
         }
-        let shareAction = UIContextualAction(style: .normal, title: "Copy") {
+        let copyAction = UIContextualAction(style: .normal, title: "Copy") {
             (action, sourceView, completionHandler) in
             self.copyTapped(sourceUrl: self.fileURLs[indexPath.row])
             completionHandler(true)
         }
-        editAction.backgroundColor = .darkGray
-        shareAction.backgroundColor = .blue
-        let swipeConfiguration = UISwipeActionsConfiguration(actions: [editAction, shareAction])
+        let renameAction = UIContextualAction(style: .normal, title: "Rename") {
+            (action, sourceView, completionHandler) in
+            self.createNameAlert(indexPath: indexPath)
+            completionHandler(true)
+        }
+        moveAction.backgroundColor = .darkGray
+        copyAction.backgroundColor = .blue
+        let swipeConfiguration = UISwipeActionsConfiguration(actions: [moveAction, copyAction , renameAction])
         swipeConfiguration.performsFirstActionWithFullSwipe = false
         return swipeConfiguration
     }
-
+    
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let deleteButton = UITableViewRowAction(style: .destructive, title: "Delete") { _, indexPath in
@@ -356,19 +436,11 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource {
                 BannerManager.showMessage(errorMessageStr: "Error Delete", .warning)
             }
         }
-
+        
         deleteButton.backgroundColor = .red
         return [deleteButton]
     }
 }
-
-//MARK: - Setup SearchBar
-extension ViewController  {
-  
-}
-
-
-
 
 //MARK: - Setup Delegates
 extension ViewController: addViewControllerDelegate {
