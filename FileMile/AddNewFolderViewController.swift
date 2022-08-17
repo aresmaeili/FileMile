@@ -14,6 +14,7 @@ protocol AddNewFolderViewControllerDelegate: AnyObject {
 
 class AddNewFolderViewController : UIViewController {
     
+    @IBOutlet weak var bottomView: UIView!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var parentView: UIView!
     @IBOutlet weak var newFolderNameTextField: UITextField!
@@ -32,19 +33,15 @@ class AddNewFolderViewController : UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        newFolderNameTextField.delegate = self
         setupkeyBoardHandling()
-        scrollView.layer.cornerRadius = 25
+        bottomView.layer.cornerRadius = 25
         confirmButton.layer.cornerRadius = 10
         cancelButton.layer.cornerRadius = 10
         confirmButton.layer.borderWidth = 0.25
         cancelButton.layer.borderWidth = 0.25
         confirmButton.layer.borderColor = UIColor.systemBlue.cgColor
-        cancelButton.layer.borderColor = UIColor.red.cgColor
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        
-
+        cancelButton.layer.borderColor = UIColor.darkGray.cgColor
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -64,9 +61,6 @@ extension AddNewFolderViewController {
             self.dismiss(animated: true) {
                 self.delegate?.closeView()
             }
-            
-
-            
         }else{
             BannerManager.showMessage(errorMessageStr: "Please choose a name for this folder", .info)
         }
@@ -88,7 +82,7 @@ extension AddNewFolderViewController {
     }
 }
 
-
+//MARK: - Handling KeyBoard
 extension AddNewFolderViewController {
     
     func setupkeyBoardHandling(){
@@ -118,6 +112,7 @@ extension AddNewFolderViewController {
     }
 }
 
+//MARK: - Handling KeyBoard
 extension AddNewFolderViewController {
     
     func subscribeToNotification(_ notification: NSNotification.Name, selector: Selector) {
@@ -150,4 +145,13 @@ extension AddNewFolderViewController {
         }
     }
 
+}
+
+//MARK: - Handling TextField
+extension AddNewFolderViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        textField.resignFirstResponder()
+        return true
+    }
 }

@@ -24,7 +24,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var filesTableView: UITableView!
     @IBOutlet weak var optionsStackViewHeightConstraint: NSLayoutConstraint!
     @IBAction func cancelButtonAction(_ sender: Any) {
-        navigationController?.popToRootViewController(animated: true)
+//        navigationController?.popToRootViewController(animated: true)
+        self.dismiss(animated: true)
     }
     
     @IBAction func insertButtonAction(_ sender: Any) {
@@ -119,7 +120,8 @@ extension ViewController{
             print("Cannot copy item at \(srcURL) to \(dstURL): \(error)")
         }
         vcType = .normal
-        navigationController?.popToRootViewController(animated: true)
+//        navigationController?.popToRootViewController(animated: true)
+        self.dismiss(animated: true)
     }
     
     func secureMoveItem(at srcURL: URL, to dstURL: URL){
@@ -132,12 +134,15 @@ extension ViewController{
             print("Cannot Move item at \(srcURL) to \(dstURL): \(error)")
         }
         vcType = .normal
-        navigationController?.popToRootViewController(animated: true)
+//        navigationController?.popToRootViewController(animated: true)
+        self.dismiss(animated: true)
     }
     
     func setupFileManager(url: URL){
         let addItem = UIBarButtonItem(title: "📂", style: .plain, target: self, action: #selector(addedTapped))
-        let sortItem = UIBarButtonItem(title: "🔃", style: .plain, target: self, action: #selector(sortTapped))
+        let sortItem = UIBarButtonItem(title: "SOR〒", style: .plain, target: self, action: #selector(sortTapped))
+        sortItem.tintColor = .darkGray
+        
         navigationItem.rightBarButtonItems =  [addItem,sortItem]
         self.title = url.lastPathComponent.removingPercentEncoding
         sortingBy(sortBy: sortingType)
@@ -209,19 +214,21 @@ extension ViewController{
     func copyTapped(sourceUrl: URL){
         sourcesURL = sourceUrl
         let vc = self.storyboard?.instantiateViewController(withIdentifier: "ViewController") as! ViewController
+        let navController = UINavigationController(rootViewController: vc)
         vc.vcType = .copy
         vc.sourcesURL = sourceUrl
         vc.destinationsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        navigationController?.pushViewController(vc, animated: true)
+        navigationController?.present(navController, animated: true)
     }
     
     func moveTapped(sourceUrl: URL){
         sourcesURL = sourceUrl
         let vc = self.storyboard?.instantiateViewController(withIdentifier: "ViewController") as! ViewController
+        let navController = UINavigationController(rootViewController: vc)
         vc.vcType = .move
         vc.sourcesURL = sourceUrl
         vc.destinationsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        navigationController?.pushViewController(vc, animated: true)
+        navigationController?.present(navController, animated: true)
     }
     
     func renameTapped(sourceFile: URL , currentName: String , newName: String , fileType:String){
@@ -249,7 +256,7 @@ extension ViewController{
     func setupOptions(){
         cancelButton.layer.cornerRadius = 10
         cancelButton.layer.borderWidth = 0.2
-        cancelButton.layer.borderColor = UIColor.red.cgColor
+        cancelButton.layer.borderColor = UIColor.darkGray.cgColor
         insertButton.layer.cornerRadius = 10
         insertButton.layer.borderWidth = 0.2
         insertButton.layer.borderColor = UIColor.systemBlue.cgColor

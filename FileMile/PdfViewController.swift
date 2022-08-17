@@ -54,7 +54,6 @@ extension PdfViewController{
             highlight.endLineStyle = .square
             page.addAnnotation(highlight)
         }
-
         pdfView.clearSelection()
     }
 }

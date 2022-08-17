@@ -7,11 +7,12 @@
 
 import UIKit
 import PDFKit
+import MarqueeLabel
 
 class filesTableViewCell: UITableViewCell {
     
     @IBOutlet weak var contentImageView: UIImageView!
-    @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var nameLabel: MarqueeLabel!
     @IBOutlet weak var fileTypeLabel: UILabel!
     
     override func awakeFromNib() {

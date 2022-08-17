@@ -45,7 +45,7 @@ extension AddViewController {
     func setupView(){
         backView.layer.cornerRadius = 25
         cancelButton.layer.borderWidth = 1
-        cancelButton.layer.borderColor = UIColor.systemBlue.cgColor
+        cancelButton.layer.borderColor = UIColor.darkGray.cgColor
         cancelButton.layer.cornerRadius = 10
         importButton.setImage(UIImage(named: "importFile"), for: .normal)
         newFolderButton.setImage(UIImage(named: "newFolder") , for: .normal)
