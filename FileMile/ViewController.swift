@@ -8,18 +8,6 @@
 import UIKit
 import PDFKit
 
-enum vcType{
-    case normal,copy,move
-}
-
-enum sortType {
-    case typeAsc,nameAsc,nameDesc,dateAsc,dateDesc
-}
-
-enum actionType{
-    case move,copy,rename,delete
-}
-
 protocol ViewControllerDelegate: AnyObject {
     func viewControllerDismissed()
 }
@@ -33,20 +21,33 @@ class ViewController: UIViewController {
     @IBOutlet weak var filesTableView: UITableView!
     @IBOutlet weak var optionsStackViewHeightConstraint: NSLayoutConstraint!
     @IBAction func cancelButtonAction(_ sender: Any) {
-        self.setupFileManager(url: destinationsURL)
+        if let url = destinationsURL {
+            setupFileManager(url: url)
+        }
     }
     @IBAction func insertButtonAction(_ sender: Any) {
         insertButtonTapped(type: vcType)
     }
-    
+
+    enum VcType{
+        case normal, copy, move
+    }
+
+    enum SortType {
+        case typeAsc, nameAsc, nameDesc, dateAsc, dateDesc
+    }
+
+    enum ActionType{
+        case move, copy, rename, delete
+    }
     var searching = false
     var optionsOpenIsHidden = true
-    var vcType: vcType = .normal
+    var vcType: VcType = .normal
     weak var delegate : ViewControllerDelegate?
     let fileManager = FileManager.default
-    var sourcesURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-    var destinationsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-    var sortingType : sortType = .typeAsc {
+    var sourcesURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+    var destinationsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+    var sortingType : SortType = .typeAsc {
         didSet{
             sortingBy(sortBy: sortingType)
         }
@@ -69,7 +70,9 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         searchBar.delegate = self
-        setupFileManager(url: destinationsURL)
+        if let url = destinationsURL {
+            setupFileManager(url: url)
+        }
         setupTableView()
         setupOptions()
         setupSearchBar()
@@ -78,12 +81,15 @@ class ViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         sortingBy(sortBy: sortingType)
-        setupFileManager(url: destinationsURL)
+        if let url = destinationsURL {
+            setupFileManager(url: url)
+        }
     }
 }
 
 //MARK: - Functions
 extension ViewController{
+    
     func createDirectory(FolderName: String){
         guard let url = FileManager.default.urls(for: .documentDirectory , in: .userDomainMask).first else { return }
         let newFolder = url.appendingPathComponent("\(FolderName)")
@@ -96,9 +102,19 @@ extension ViewController{
         }
     }
     
-    func insertExistedFile(sourceUrl: URL,destinationUrl: URL , insertType: vcType){
+    func insertExistedFile(sourceUrl: URL,destinationUrl: URL , insertType: VcType){
         let alert = UIAlertController(title: "EXISTED", message: "Your file Existed", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Replace", style: .default, handler: { [weak self] _ in
+        alert.addAction(UIAlertAction(title: "Replace", style: .default, handler: { _ in
+           confirmAction()
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { [weak self] _ in
+            self?.delegate?.viewControllerDismissed()
+            self?.dismiss(animated: true)
+            self?.navigationController?.popToRootViewController(animated: true)
+        }))
+       present(alert, animated: true, completion: nil)
+        
+        func confirmAction(){
             do{
                 try FileManager.default.removeItem(at: destinationUrl)
                 switch insertType {
@@ -109,50 +125,41 @@ extension ViewController{
                 case .move:
                     try FileManager.default.moveItem(at: sourceUrl, to: destinationUrl)
                 }
-                self?.dismiss(animated: true)
-                self?.navigationController?.popToRootViewController(animated: true)
+                dismiss(animated: true)
+                navigationController?.popToRootViewController(animated: true)
             } catch (let error) {
                 print("Cannot insert item at \(sourceUrl) to \(destinationUrl): \(error)")
             }
-            self?.sortingBy(sortBy: self?.sortingType ?? .typeAsc)
-        }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { [weak self] _ in
-            self?.delegate?.viewControllerDismissed()
-            self?.dismiss(animated: true)
-            self?.navigationController?.popToRootViewController(animated: true)
-            
-        }))
-        self.present(alert, animated: true, completion: nil)
+            sortingBy(sortBy: sortingType)
+        }
     }
     
-    func secureCopyItem(at srcURL: URL, to dstURL: URL){
+    func secureCopyItem(at sourceURL: URL, to destinationURL: URL){
         do {
-            if FileManager.default.fileExists(atPath: dstURL.path) {
-                insertExistedFile(sourceUrl: srcURL, destinationUrl: dstURL, insertType: .copy)
+            if FileManager.default.fileExists(atPath: destinationURL.path) {
+                insertExistedFile(sourceUrl: sourceURL, destinationUrl: destinationURL, insertType: .copy)
             }else{
-                try FileManager.default.copyItem(at: srcURL, to: dstURL)
+                try FileManager.default.copyItem(at: sourceURL, to: destinationURL)
             }
         } catch (let error) {
-            print("Cannot copy item at \(srcURL) to \(dstURL): \(error)")
+            print("Cannot copy item at \(sourceURL) to \(destinationURL): \(error)")
         }
         vcType = .normal
-        self.dismiss(animated: true)
+        dismiss(animated: true)
     }
     
-    func secureMoveItem(at srcURL: URL, to dstURL: URL){
+    func secureMoveItem(at sourceURL: URL, to destinationURL: URL){
         do {
-            if FileManager.default.fileExists(atPath: dstURL.path) {
-                insertExistedFile(sourceUrl: srcURL, destinationUrl: dstURL, insertType: .move)
+            if FileManager.default.fileExists(atPath: destinationURL.path) {
+                insertExistedFile(sourceUrl: sourceURL, destinationUrl: destinationURL, insertType: .move)
             }
-            try FileManager.default.moveItem(at: srcURL, to: dstURL)
+            try FileManager.default.moveItem(at: sourceURL, to: destinationURL)
         } catch (let error) {
-            print("Cannot Move item at \(srcURL) to \(dstURL): \(error)")
+            print("Cannot Move item at \(sourceURL) to \(destinationURL): \(error)")
         }
         vcType = .normal
-        //        navigationController?.popToRootViewController(animated: true)
-        self.delegate?.viewControllerDismissed()
-        self.dismiss(animated: true)
-        
+        delegate?.viewControllerDismissed()
+        dismiss(animated: true)
     }
     
     func setupFileManager(url: URL){
@@ -189,7 +196,6 @@ extension ViewController{
     }
     
     @objc func sortTapped(){
-        
         let alert = UIAlertController(title: "Sort by:" , message: "", preferredStyle: .actionSheet)
         let sortByNameAscAction = UIAlertAction(title: "Name Asc", style: .default) {
             UIAlertAction in
@@ -224,12 +230,16 @@ extension ViewController{
         self.present(alert, animated: true, completion: nil)
     }
     
-    func insertButtonTapped(type: vcType){
+    func insertButtonTapped(type: VcType){
         switch type {
         case .copy:
-            secureCopyItem(at: sourcesURL, to: destinationsURL.appendingPathComponent(sourcesURL.lastPathComponent))
+            if let url = sourcesURL, let destination = destinationsURL {
+                secureCopyItem(at: url, to: destination.appendingPathComponent(url.lastPathComponent))
+            }
         case .move:
-            secureMoveItem(at: sourcesURL, to: destinationsURL.appendingPathComponent(sourcesURL.lastPathComponent))
+            if let source = sourcesURL, let destination = destinationsURL {
+                secureMoveItem(at: source, to: destination.appendingPathComponent(source.lastPathComponent))
+            }
         case .normal: return
         }
     }
@@ -330,6 +340,7 @@ extension ViewController{
         let alert = UIAlertController(title: "Rename", message: "Select your new name", preferredStyle: .alert)
         alert.addTextField { (textField) in
             textField.text = ""
+            textField.placeholder = "New Name"
         }
         alert.addAction(UIAlertAction(title: "Rename", style: .default, handler: { [weak self] _ in
             let textField = alert.textFields![0]
@@ -339,14 +350,15 @@ extension ViewController{
         alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { [weak self] _ in
             self?.dismiss(animated: true)
         }))
-        self.present(alert, animated: true, completion: nil)
+        present(alert, animated: true, completion: nil)
     }
     
-    func sortingBy(sortBy: sortType){
+    func sortingBy(sortBy: SortType){
+        guard let destination = destinationsURL else { return }
         switch sortBy {
         case .typeAsc:
             do {
-                filteredFileURLs = try FileManager.default.contentsOfDirectory(at: destinationsURL, includingPropertiesForKeys: [.nameKey], options: .skipsHiddenFiles).sorted(by: {
+                filteredFileURLs = try FileManager.default.contentsOfDirectory(at: destination, includingPropertiesForKeys: [.nameKey], options: .skipsHiddenFiles).sorted(by: {
                         return $0.pathExtension < $1.pathExtension
                 })
             }catch{
@@ -354,7 +366,7 @@ extension ViewController{
             }
         case .nameAsc:
             do {
-                filteredFileURLs = try FileManager.default.contentsOfDirectory(at: destinationsURL, includingPropertiesForKeys: [.nameKey], options: .skipsHiddenFiles).sorted(by: {
+                filteredFileURLs = try FileManager.default.contentsOfDirectory(at: destination, includingPropertiesForKeys: [.nameKey], options: .skipsHiddenFiles).sorted(by: {
                     if let name1 = try? $0.resourceValues(forKeys: [.nameKey]).name?.lowercased(),
                        let name2 = try? $1.resourceValues(forKeys: [.nameKey]).name?.lowercased() {
                         return name1 < name2
@@ -366,7 +378,7 @@ extension ViewController{
             }
         case .nameDesc:
             do {
-                filteredFileURLs = try FileManager.default.contentsOfDirectory(at: destinationsURL, includingPropertiesForKeys: [.nameKey], options: .skipsHiddenFiles).sorted(by: {
+                filteredFileURLs = try FileManager.default.contentsOfDirectory(at: destination, includingPropertiesForKeys: [.nameKey], options: .skipsHiddenFiles).sorted(by: {
                     if let name1 = try? $0.resourceValues(forKeys: [.nameKey]).name?.lowercased(),
                        let name2 = try? $1.resourceValues(forKeys: [.nameKey]).name?.lowercased() {
                         return name1 > name2
@@ -378,7 +390,7 @@ extension ViewController{
             }
         case .dateAsc:
             do {
-                filteredFileURLs = try FileManager.default.contentsOfDirectory(at: destinationsURL, includingPropertiesForKeys: [.creationDateKey], options: .skipsHiddenFiles).sorted(by: {
+                filteredFileURLs = try FileManager.default.contentsOfDirectory(at: destination, includingPropertiesForKeys: [.creationDateKey], options: .skipsHiddenFiles).sorted(by: {
                     if let date1 = try? $0.resourceValues(forKeys: [.creationDateKey]).creationDate,
                        let date2 = try? $1.resourceValues(forKeys: [.creationDateKey]).creationDate {
                         return date1 < date2
@@ -391,7 +403,7 @@ extension ViewController{
             }
         case .dateDesc:
             do {
-                filteredFileURLs = try FileManager.default.contentsOfDirectory(at: destinationsURL, includingPropertiesForKeys: [.creationDateKey], options: .skipsHiddenFiles).sorted(by: {
+                filteredFileURLs = try FileManager.default.contentsOfDirectory(at: destination, includingPropertiesForKeys: [.creationDateKey], options: .skipsHiddenFiles).sorted(by: {
                     if let date1 = try? $0.resourceValues(forKeys: [.creationDateKey]).creationDate,
                        let date2 = try? $1.resourceValues(forKeys: [.creationDateKey]).creationDate {
                         return date1 > date2
@@ -408,6 +420,7 @@ extension ViewController{
 
 //MARK: - Setup TableView
 extension ViewController: UITableViewDelegate,UITableViewDataSource {
+    
     func setupTableView(){
         filesTableView.register(UINib(nibName: "filesTableViewCell", bundle: nil), forCellReuseIdentifier: "filesTableViewCell")
         filesTableView.delegate = self
@@ -439,7 +452,9 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource {
         if editingStyle == .delete {
             do {
                 try FileManager.default.removeItem(at: filteredFileURLs[indexPath.row])
-                setupFileManager(url: destinationsURL)
+                if let destination = destinationsURL {
+                    setupFileManager(url: destination)
+                }
             }catch{
                 BannerManager.showMessage(errorMessageStr: "Error Delete", .warning)
             }
@@ -447,10 +462,9 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        switch vcType{
+        switch vcType {
         case .normal: return true
-        case .copy: return false
-        case .move: return false
+        default: return false
         }
     }
     
@@ -472,55 +486,67 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource {
         return swipeConfiguration
     }
     
-    
-    private func swipeButtonsTapped(rowIndexPathAt indexPath: IndexPath, actionType: actionType) -> UIContextualAction {
+    private func swipeButtonsTapped(rowIndexPathAt indexPath: IndexPath, actionType: ActionType) -> UIContextualAction {
         switch actionType {
         case .move:
-            let moveAction = UIContextualAction(style: .normal, title: "Move") {
-                (action, sourceView, completionHandler) in
-                self.moveTapped(sourceUrl: self.filteredFileURLs[indexPath.row])
-                completionHandler(true)
-            }
-            return moveAction
+            return swipeButtonMoveAction(indexPath: indexPath)
         case .copy:
-            let copyAction = UIContextualAction(style: .normal, title: "Copy") {
-                (action, sourceView, completionHandler) in
-                self.copyTapped(sourceUrl: self.filteredFileURLs[indexPath.row])
-                completionHandler(true)
-            }
-            return copyAction
+            return swipeButtonCopyAction(indexPath: indexPath)
         case .rename:
-            let renameAction = UIContextualAction(style: .normal, title: "Rename") {
-                (action, sourceView, completionHandler) in
-                self.createNameAlert(indexPath: indexPath)
-                completionHandler(true)
-            }
-            return renameAction
+            return swipeButtonRenameAction(indexPath: indexPath)
         case .delete:
-            let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { [weak self] (_, _, _) in
-                guard let self = self else {return}
-                do {
-                    try FileManager.default.removeItem(at: self.filteredFileURLs[indexPath.row])
-                    self.setupFileManager(url: self.destinationsURL)
-                }catch{
-                    BannerManager.showMessage(errorMessageStr: "Error Delete", .warning)
-                }
+            return swipeButtonDeleteAction(indexPath: indexPath)
+        }
+    }
+    
+    func swipeButtonDeleteAction(indexPath: IndexPath) -> UIContextualAction {
+    return UIContextualAction(style: .destructive, title: "Delete") { [weak self] (_, _, _) in
+        guard let self = self else {return}
+        do {
+            try FileManager.default.removeItem(at: self.filteredFileURLs[indexPath.row])
+            if let url = self.destinationsURL {
+                self.setupFileManager(url: url)
             }
-            return deleteAction
+        }catch{
+            BannerManager.showMessage(errorMessageStr: "Error Delete", .warning)
+        }
+    }
+}
+    func swipeButtonRenameAction(indexPath: IndexPath) -> UIContextualAction {
+        return UIContextualAction(style: .normal, title: "Rename") {
+            (action, sourceView, completionHandler) in
+            self.createNameAlert(indexPath: indexPath)
+            completionHandler(true)
+        }
+    }
+    
+    func swipeButtonCopyAction(indexPath: IndexPath) -> UIContextualAction {
+        return UIContextualAction(style: .normal, title: "Copy") {
+            (action, sourceView, completionHandler) in
+            self.copyTapped(sourceUrl: self.filteredFileURLs[indexPath.row])
+            completionHandler(true)
+        }
+    }
+    
+    func swipeButtonMoveAction(indexPath: IndexPath) -> UIContextualAction {
+        return UIContextualAction(style: .normal, title: "Move") {
+            (action, sourceView, completionHandler) in
+            self.moveTapped(sourceUrl: self.filteredFileURLs[indexPath.row])
+            completionHandler(true)
         }
     }
 }
 
 //MARK: - Setup Delegates
 extension ViewController : UISearchBarDelegate {
+    
     func setupSearchBar(){
         searchBar.delegate = self
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         sortingBy(sortBy: sortingType)
-        if searchText.isEmpty {
-        }else{
+        if !searchText.isEmpty {
             filteredFileURLs = filteredFileURLs.filter {
                 $0.lastPathComponent.lowercased().contains(searchText.lowercased())
             }
@@ -542,15 +568,21 @@ extension ViewController : UISearchBarDelegate {
 
 //MARK: - Setup Delegates
 extension ViewController: addViewControllerDelegate {
+    
     func closedView() {
-        setupFileManager(url: destinationsURL)
+        if let url = destinationsURL {
+            setupFileManager(url: url)
+        }
     }
 }
 
 //MARK: - Delegates
 extension ViewController : ViewControllerDelegate {
+    
     func viewControllerDismissed() {
         delegate?.viewControllerDismissed()
-        setupFileManager(url: destinationsURL)
+        if let url = destinationsURL {
+            setupFileManager(url: url)
+        }
     }
 }

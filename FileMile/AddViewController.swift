@@ -67,7 +67,7 @@ extension AddViewController {
         present(nav, animated: true)
     }
     
-    func insertExistedFile(sourceUrl: URL,destinationUrl: URL , insertType: vcType){
+    func insertExistedFile(sourceUrl: URL,destinationUrl: URL , insertType: ViewController.VcType){
         let alert = UIAlertController(title: "EXISTED", message: "Your file Existed", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Replace", style: .default, handler: { [weak self] _ in
             do{
