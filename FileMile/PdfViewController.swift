@@ -23,7 +23,6 @@ class PdfViewController: UIViewController{
 
 //MARK: - Functions
 extension PdfViewController: PDFViewDelegate{
-    
     func pdfFileSetup(fileUrl: URL){
         pdfView.delegate = self
         view.addSubview(pdfView)
@@ -38,7 +37,6 @@ extension PdfViewController: PDFViewDelegate{
 
 //MARK: - PDF Delegates
 extension PdfViewController{
-
     private func createMenu() {
         let highlightItem = UIMenuItem(title: "Highlight", action: #selector(highlight(_:)))
         UIMenuController.shared.menuItems = [highlightItem]

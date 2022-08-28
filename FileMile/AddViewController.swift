@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import MobileCoreServices
+import UniformTypeIdentifiers
 
 protocol addViewControllerDelegate: AnyObject {
     func closedView()
@@ -30,10 +31,9 @@ class AddViewController : UIViewController {
         dismiss(animated: true)
     }
     
-   
     var url : URL!
     weak var delegate : addViewControllerDelegate?
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -54,13 +54,9 @@ extension AddViewController {
         importButton.setTitle("", for: .normal)
         newFolderButton.setTitle("", for: .normal)
     }
-                
+    
     func importButtonDidTap(){
         openDocumentPicker()
-    }
-    
-    func downloadButtonDidTap(){
-    
     }
     
     func newFolderButtonDidTap(){
@@ -73,9 +69,9 @@ extension AddViewController {
     
     func insertExistedFile(sourceUrl: URL,destinationUrl: URL , insertType: vcType){
         let alert = UIAlertController(title: "EXISTED", message: "Your file Existed", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Replace", style: .default, handler: { [ weak alert] (_) in
+        alert.addAction(UIAlertAction(title: "Replace", style: .default, handler: { [weak self] _ in
             do{
-            try FileManager.default.removeItem(at: destinationUrl)
+                try FileManager.default.removeItem(at: destinationUrl)
                 switch insertType {
                 case .normal:
                     return
@@ -87,10 +83,10 @@ extension AddViewController {
             } catch (let error) {
                 print("Cannot insert item at \(sourceUrl) to \(destinationUrl): \(error)")
             }
-            self.delegate?.closedView()
+            self?.delegate?.closedView()
         }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { [self, weak alert] (_) in
-            self.dismiss(animated: true)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { [weak self] _ in
+            self?.dismiss(animated: true)
         }))
         self.present(alert, animated: true, completion: nil)
     }
@@ -99,34 +95,44 @@ extension AddViewController {
 
 extension AddViewController:  UIDocumentPickerDelegate {
     func openDocumentPicker(){
-        let documentPicker = UIDocumentPickerViewController(documentTypes: [String(kUTTypeText),String(kUTTypeContent),String(kUTTypeItem),String(kUTTypeData)], in: .import)
+        var documentPicker: UIDocumentPickerViewController!
+        if #available(iOS 14, *) {
+            // iOS 14 & later
+            let supportedTypes : [UTType] = [UTType.pdf , UTType.epub]
+            documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: supportedTypes)
+        } else {
+            // iOS 13 or older code
+            documentPicker = UIDocumentPickerViewController(documentTypes: [String(kUTTypeText),String(kUTTypeContent),String(kUTTypeItem),String(kUTTypeData)], in: .import)
+        }
         documentPicker.delegate = self
+        documentPicker.allowsMultipleSelection = true
+        documentPicker.modalPresentationStyle = .formSheet
         self.present(documentPicker, animated: true)
     }
     
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         guard let url = urls.first else { return }
         secureCopyItem(at: url, to: (self.url.appendingPathComponent("\(url.lastPathComponent)")))
-    print(urls)
+        print(urls)
     }
     
     func secureCopyItem(at sourceUrl: URL, to destinationUrl: URL){
-            do {
-                if destinationUrl.pathExtension == "pdf"{
+        do {
+            if destinationUrl.pathExtension == "pdf"{
                 if FileManager.default.fileExists(atPath: destinationUrl.path) {
                     insertExistedFile(sourceUrl: sourceUrl, destinationUrl: destinationUrl , insertType: .copy)
                 }else{
                     try FileManager.default.copyItem(at: sourceUrl, to: destinationUrl)
                 }
-                }else{
-                    BannerManager.showMessage(errorMessageStr: "Only PDF Files", .warning)
-                }
-            } catch (let error) {
-                print("Cannot copy item at \(sourceUrl) to \(destinationUrl): \(error)")
+            }else{
+                BannerManager.showMessage(errorMessageStr: "Only PDF Files", .warning)
             }
-        delegate?.closedView()
-        self.dismiss(animated: true) 
+        } catch (let error) {
+            print("Cannot copy item at \(sourceUrl) to \(destinationUrl): \(error)")
         }
+        delegate?.closedView()
+        self.dismiss(animated: true)
+    }
 }
 
 extension AddViewController: AddNewFolderViewControllerDelegate{
