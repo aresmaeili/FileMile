@@ -260,7 +260,7 @@
                                                                 <state key="normal" title="Button"/>
                                                                 <buttonConfiguration key="configuration" style="plain" title="Confirm"/>
                                                                 <connections>
-                                                                    <action selector="confirmbuttonAction:" destination="BK5-Rb-DWL" eventType="touchUpInside" id="uEo-Nl-Inq"/>
+                                                                    <action selector="confirmButtonAction:" destination="BK5-Rb-DWL" eventType="touchUpInside" id="i4y-qz-tT1"/>
                                                                 </connections>
                                                             </button>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" role="cancel" translatesAutoresizingMaskIntoConstraints="NO" id="FWc-DJ-8Se">

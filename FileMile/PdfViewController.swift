@@ -31,7 +31,8 @@ extension PdfViewController: PDFViewDelegate{
         pdfView.document = document
         pdfView.autoScales = true
         pdfView.maxScaleFactor = 4.0
-        pdfView.minScaleFactor = pdfView.scaleFactorForSizeToFit 
+        pdfView.minScaleFactor = pdfView.scaleFactorForSizeToFit
+        self.navigationItem.title = fileUrl.lastPathComponent.removingPercentEncoding
     }
 }
 
