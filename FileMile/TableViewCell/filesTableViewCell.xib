@@ -40,7 +40,6 @@
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="0.48944536423841062" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="g3W-H0-YPI" firstAttribute="trailing" secondItem="vfg-bB-RGr" secondAttribute="trailing" id="1PN-kT-gSY"/>
                             <constraint firstAttribute="bottom" secondItem="vfg-bB-RGr" secondAttribute="bottom" constant="8" id="CBh-Ex-Lco"/>
@@ -72,6 +71,11 @@
             <point key="canvasLocation" x="355.79710144927537" y="154.35267857142856"/>
         </tableViewCell>
     </objects>
+    <designables>
+        <designable name="aIu-pA-Y2b">
+            <size key="intrinsicContentSize" width="41.5" height="20.5"/>
+        </designable>
+    </designables>
     <resources>
         <image name="square.grid.3x3" catalog="system" width="128" height="112"/>
     </resources>

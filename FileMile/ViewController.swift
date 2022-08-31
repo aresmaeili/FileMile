@@ -201,7 +201,7 @@ extension ViewController{
             UIAlertAction in
             self.sortingType = .nameAsc
         }
-        let sortByTypeAscAction = UIAlertAction(title: "type Asc", style: .default) {
+        let sortByTypeAscAction = UIAlertAction(title: "Type Asc", style: .default) {
             UIAlertAction in
             self.sortingType = .typeAsc
         }
