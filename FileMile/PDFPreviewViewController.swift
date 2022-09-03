@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import PDFKit
 
-class PdfViewController: UIViewController{
+class PDFPreviewViewController: UIViewController{
     
     let pdfView = PDFView()
     var pdfUrl: URL!
@@ -22,7 +22,7 @@ class PdfViewController: UIViewController{
 }
 
 //MARK: - Functions
-extension PdfViewController: PDFViewDelegate{
+extension PDFPreviewViewController: PDFViewDelegate{
     func pdfFileSetup(fileUrl: URL){
         pdfView.delegate = self
         view.addSubview(pdfView)
@@ -32,12 +32,13 @@ extension PdfViewController: PDFViewDelegate{
         pdfView.autoScales = true
         pdfView.maxScaleFactor = 4.0
         pdfView.minScaleFactor = pdfView.scaleFactorForSizeToFit
-        self.navigationItem.title = fileUrl.lastPathComponent.removingPercentEncoding
+        navigationItem.title = fileUrl.lastPathComponent.removingPercentEncoding
     }
 }
 
 //MARK: - PDF Delegates
-extension PdfViewController{
+extension PDFPreviewViewController{
+    
     private func createMenu() {
         let highlightItem = UIMenuItem(title: "Highlight", action: #selector(highlight(_:)))
         UIMenuController.shared.menuItems = [highlightItem]

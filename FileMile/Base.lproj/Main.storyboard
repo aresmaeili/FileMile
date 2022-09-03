@@ -9,10 +9,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Manager View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController storyboardIdentifier="ViewController" id="BYZ-38-t0r" customClass="ViewController" customModule="FileMile" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ViewController" id="BYZ-38-t0r" customClass="PDFManagerViewController" customModule="FileMile" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -101,10 +101,10 @@
             </objects>
             <point key="canvasLocation" x="45" y="84"/>
         </scene>
-        <!--Pdf View Controller-->
+        <!--Preview View Controller-->
         <scene sceneID="LnP-0Q-TEW">
             <objects>
-                <viewController storyboardIdentifier="PdfViewController" id="Vpa-x7-LO4" customClass="PdfViewController" customModule="FileMile" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PdfViewController" id="Vpa-x7-LO4" customClass="PDFPreviewViewController" customModule="FileMile" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="dTH-Ef-adx">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -116,10 +116,10 @@
             </objects>
             <point key="canvasLocation" x="955" y="-579"/>
         </scene>
-        <!--Add View Controller-->
+        <!--Import View Controller-->
         <scene sceneID="Epr-IK-Hkk">
             <objects>
-                <viewController storyboardIdentifier="AddViewController" id="aTr-PH-Z2U" customClass="AddViewController" customModule="FileMile" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AddViewController" id="aTr-PH-Z2U" customClass="ImportViewController" customModule="FileMile" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="MW8-YY-yHr">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -239,13 +239,13 @@
                                                         <rect key="frame" x="20" y="32" width="374" height="248"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Type your NewFolder name:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4B0-GS-W6p">
-                                                                <rect key="frame" x="16" y="0.0" width="342" height="54"/>
+                                                                <rect key="frame" x="16" y="0.0" width="342" height="38"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                 <nil key="textColor"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Type NewFolder Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="LRr-xB-het">
-                                                                <rect key="frame" x="16" y="76" width="342" height="64"/>
+                                                                <rect key="frame" x="16" y="60" width="342" height="64"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="height" constant="64" id="wiP-Ht-Tkd"/>
                                                                 </constraints>
@@ -253,9 +253,9 @@
                                                                 <textInputTraits key="textInputTraits"/>
                                                             </textField>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Zis-vB-biD">
-                                                                <rect key="frame" x="16" y="162" width="342" height="32"/>
+                                                                <rect key="frame" x="16" y="146" width="342" height="40"/>
                                                                 <constraints>
-                                                                    <constraint firstAttribute="height" constant="32" id="Nlg-0X-coK"/>
+                                                                    <constraint firstAttribute="height" constant="40" id="Nlg-0X-coK"/>
                                                                 </constraints>
                                                                 <state key="normal" title="Button"/>
                                                                 <buttonConfiguration key="configuration" style="plain" title="Confirm"/>
@@ -264,9 +264,9 @@
                                                                 </connections>
                                                             </button>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" role="cancel" translatesAutoresizingMaskIntoConstraints="NO" id="FWc-DJ-8Se">
-                                                                <rect key="frame" x="16" y="216" width="342" height="32"/>
+                                                                <rect key="frame" x="16" y="208" width="342" height="40"/>
                                                                 <constraints>
-                                                                    <constraint firstAttribute="height" constant="32" id="rdt-yt-R5G"/>
+                                                                    <constraint firstAttribute="height" constant="40" id="rdt-yt-R5G"/>
                                                                 </constraints>
                                                                 <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <state key="normal" title="Button"/>

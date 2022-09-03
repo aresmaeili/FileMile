@@ -12,7 +12,7 @@ protocol ViewControllerDelegate: AnyObject {
     func viewControllerDismissed()
 }
 
-class ViewController: UIViewController {
+class PDFManagerViewController: UIViewController {
     
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var cancelButton: UIButton!
@@ -21,9 +21,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var filesTableView: UITableView!
     @IBOutlet weak var optionsStackViewHeightConstraint: NSLayoutConstraint!
     @IBAction func cancelButtonAction(_ sender: Any) {
-        if let url = destinationsURL {
-            setupFileManager(url: url)
-        }
+        delegate?.viewControllerDismissed()
+        dismiss(animated: true)
     }
     @IBAction func insertButtonAction(_ sender: Any) {
         insertButtonTapped(type: vcType)
@@ -48,7 +47,7 @@ class ViewController: UIViewController {
     var sourcesURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
     var destinationsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
     var sortingType : SortType = .typeAsc {
-        didSet{
+        didSet {
             sortingBy(sortBy: sortingType)
         }
     }
@@ -88,7 +87,7 @@ class ViewController: UIViewController {
 }
 
 //MARK: - Functions
-extension ViewController{
+extension PDFManagerViewController{
     
     func createDirectory(FolderName: String){
         guard let url = FileManager.default.urls(for: .documentDirectory , in: .userDomainMask).first else { return }
@@ -167,7 +166,7 @@ extension ViewController{
         let sortItem = UIBarButtonItem(title: "SOR〒", style: .plain, target: self, action: #selector(sortTapped))
         sortItem.tintColor = .darkGray
         navigationItem.rightBarButtonItems =  [addItem,sortItem]
-        self.title = url.lastPathComponent.removingPercentEncoding
+        title = url.lastPathComponent.removingPercentEncoding
         sortingBy(sortBy: sortingType)
         DispatchQueue.main.async {
             self.filesTableView.reloadData()
@@ -176,7 +175,7 @@ extension ViewController{
     
     @objc func transportFile(){
         if optionsOpenIsHidden {
-            optionsStackViewHeightConstraint.constant = 25
+            optionsStackViewHeightConstraint.constant = 40
             insertButton.isHidden = false
             cancelButton.isHidden = false
             optionsOpenIsHidden.toggle()
@@ -189,7 +188,7 @@ extension ViewController{
     }
     
     @objc func addedTapped(){
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "AddViewController") as! AddViewController
+        let vc = self.storyboard?.instantiateViewController(withIdentifier: "AddViewController") as! ImportViewController
         vc.url = destinationsURL
         vc.delegate = self
         navigationController?.present(vc, animated: true)
@@ -246,7 +245,7 @@ extension ViewController{
     
     func copyTapped(sourceUrl: URL){
         sourcesURL = sourceUrl
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "ViewController") as! ViewController
+        let vc = self.storyboard?.instantiateViewController(withIdentifier: "ViewController") as! PDFManagerViewController
         let navController = UINavigationController(rootViewController: vc)
         vc.vcType = .copy
         vc.sourcesURL = sourceUrl
@@ -257,7 +256,7 @@ extension ViewController{
     
     func moveTapped(sourceUrl: URL){
         sourcesURL = sourceUrl
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "ViewController") as! ViewController
+        let vc = self.storyboard?.instantiateViewController(withIdentifier: "ViewController") as! PDFManagerViewController
         let navController = UINavigationController(rootViewController: vc)
         vc.vcType = .move
         vc.sourcesURL = sourceUrl
@@ -302,12 +301,12 @@ extension ViewController{
             cancelButton.isHidden = true
         case .copy:
             insertButton.setTitle("Copy Here!", for: .normal)
-            optionsStackViewHeightConstraint.constant = 25
+            optionsStackViewHeightConstraint.constant = 40
             insertButton.isHidden = false
             cancelButton.isHidden = false
         case .move:
             insertButton.setTitle("Move Here!", for: .normal)
-            optionsStackViewHeightConstraint.constant = 25
+            optionsStackViewHeightConstraint.constant = 40
             insertButton.isHidden = false
             cancelButton.isHidden = false
         }
@@ -315,7 +314,7 @@ extension ViewController{
     
     func selectObjectTapped(fileUrl: URL){
         if fileUrl.pathExtension == "" {
-            let vc = self.storyboard?.instantiateViewController(withIdentifier: "ViewController") as! ViewController
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "ViewController") as! PDFManagerViewController
             vc.vcType = self.vcType
             vc.sourcesURL = self.sourcesURL
             vc.destinationsURL = fileUrl
@@ -326,7 +325,7 @@ extension ViewController{
                 BannerManager.showMessage(errorMessageStr: "The same file!!!", .warning)
             }
         } else if fileUrl.pathExtension == "pdf" {
-            let vc = self.storyboard?.instantiateViewController(withIdentifier: "PdfViewController") as! PdfViewController
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "PdfViewController") as! PDFPreviewViewController
             vc.pdfUrl = fileUrl
             navigationController?.pushViewController(vc, animated: true)
         } else {
@@ -419,7 +418,7 @@ extension ViewController{
 }
 
 //MARK: - Setup TableView
-extension ViewController: UITableViewDelegate,UITableViewDataSource {
+extension PDFManagerViewController: UITableViewDelegate,UITableViewDataSource {
     
     func setupTableView(){
         filesTableView.register(UINib(nibName: "filesTableViewCell", bundle: nil), forCellReuseIdentifier: "filesTableViewCell")
@@ -538,7 +537,7 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource {
 }
 
 //MARK: - Setup Delegates
-extension ViewController : UISearchBarDelegate {
+extension PDFManagerViewController : UISearchBarDelegate {
     
     func setupSearchBar(){
         searchBar.delegate = self
@@ -567,7 +566,7 @@ extension ViewController : UISearchBarDelegate {
 }
 
 //MARK: - Setup Delegates
-extension ViewController: addViewControllerDelegate {
+extension PDFManagerViewController: addViewControllerDelegate {
     
     func closedView() {
         if let url = destinationsURL {
@@ -577,9 +576,10 @@ extension ViewController: addViewControllerDelegate {
 }
 
 //MARK: - Delegates
-extension ViewController : ViewControllerDelegate {
+extension PDFManagerViewController : ViewControllerDelegate {
     
     func viewControllerDismissed() {
+        sourcesURL = nil
         delegate?.viewControllerDismissed()
         if let url = destinationsURL {
             setupFileManager(url: url)

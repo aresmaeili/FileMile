@@ -14,7 +14,7 @@ protocol addViewControllerDelegate: AnyObject {
     func closedView()
 }
 
-class AddViewController : UIViewController {
+class ImportViewController : UIViewController {
     
     @IBOutlet weak var backView: UIView!
     @IBOutlet weak var newFolderButton: UIButton!
@@ -41,7 +41,7 @@ class AddViewController : UIViewController {
 }
 
 //MARK: - Functions
-extension AddViewController {
+extension ImportViewController {
     func setupView(){
         backView.layer.cornerRadius = 25
         cancelButton.layer.borderWidth = 1
@@ -67,7 +67,7 @@ extension AddViewController {
         present(nav, animated: true)
     }
     
-    func insertExistedFile(sourceUrl: URL,destinationUrl: URL , insertType: ViewController.VcType){
+    func insertExistedFile(sourceUrl: URL,destinationUrl: URL , insertType: PDFManagerViewController.VcType){
         let alert = UIAlertController(title: "EXISTED", message: "Your file Existed", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Replace", style: .default, handler: { [weak self] _ in
             do{
@@ -93,7 +93,7 @@ extension AddViewController {
 }
 
 
-extension AddViewController:  UIDocumentPickerDelegate {
+extension ImportViewController:  UIDocumentPickerDelegate {
     func openDocumentPicker(){
         var documentPicker: UIDocumentPickerViewController!
         if #available(iOS 14, *) {
@@ -135,7 +135,7 @@ extension AddViewController:  UIDocumentPickerDelegate {
     }
 }
 
-extension AddViewController: AddNewFolderViewControllerDelegate{
+extension ImportViewController: AddNewFolderViewControllerDelegate{
     func closeView() {
         self.dismiss(animated: true) {
             self.delegate?.closedView()
